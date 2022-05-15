@@ -4,57 +4,151 @@ MAX_CAT=4;
 MAX_COD=30; 
 
 type 
- rango_categoria=1..MAX_CAT; 
- rango_codigo=1..MAX_COD; 
- Venta=record 
-   nombre:string; 
-   cod_vuelo:rango_codigo; 
-   categoria:rango_categoria; 
-   nroAsiento:integer; 
- end; 
- Lista=^nodo; 
+  rango_categoria=1..MAX_CAT; 
+  rango_codigo=1..MAX_COD; 
+  Venta=record 
+    nombre:string; 
+    cod_vuelo:rango_codigo; 
+    categoria:rango_categoria; 
+    nroAsiento:integer; 
+  end; 
+  Lista=^nodo; 
   nodo=record 
     dato:Venta; 
     sig:lista; 
   end; 
- Precios=array[rango_categoria,rango_codigo] of real;
- InfoCodigo=record
-   cod:rango_codigo;
-   cant_pasajes:integer;
-   montoTotal:real;
- end;
- Lista2=^nodo2;
- nodo2=record
-   dato:InfoCodigo;
-   sig:lista2;
- end;
+  Precios=array[rango_categoria,rango_codigo] of real;
+  InfoCodigo=record
+    cod:rango_codigo;
+    cant_pasajes:integer;
+    montoTotal:real;
+  end;
+  Lista2=^nodo2;
+  nodo2=record
+    dato:InfoCodigo;
+    sig:lista2;
+  end;
+  InfoMax=record
+    cod_vuelo:rango_codigo;
+    cant:integer;
+  end;
+  VectorMaximos=array[1..5] of InfoMax;
 
- InfoMax=record
-   cod_vuelo:rango_codigo;
-   cant:integer;
- end;
- VectorMaximos=array[1..5]of InfoMax;
-procedure inicializarMaximos(var v:VectorMaximos); var i:integer; begin for i:=1 to 5 do v[i].cant:=0; end; procedure informarMaximos( v:VectorMaximos); var i:integer; begin for i:=1 to 5 do begin writeln('el codigo',v[i].cod_vuelo,'tiene ',v[i].cant,'pasajes vendidos.') ; v[i].cant:=0; end; end;
+procedure inicializarMaximos(var v:VectorMaximos); 
+var 
+  i:integer; 
+begin 
+  for i:=1 to 5 do 
+    v[i].cant:=0; 
+end; 
 
-procedure actualizarMax(var max:VectorMaximos;act:InfoCodigo); var pos,i:integer; begin pos:=1; while(pos<=5)and(act.cant_pasajes < max[pos].cant)do begin pos:=pos+1; end; if(pos<=5)then begin for i:=5 downto pos do begin max[i]:=max[i-1]; end; max[pos].cant:=act.cant_pasajes; max[pos].cod_vuelo:=act.cod; end;
-
+procedure informarMaximos(v:VectorMaximos); 
+var 
+  i:integer; 
+begin 
+  for i:=1 to 5 do begin 
+    writeln('el codigo',v[i].cod_vuelo,'tiene ',v[i].cant,'pasajes vendidos.'); 
+    v[i].cant:=0; 
+  end; 
 end;
 
-procedure InsertarOrdenado(var l:Lista2;dato:InfoCodigo); var nue,ant,act:Lista2; begin new(nue); nue^.dato:=dato;
+procedure actualizarMax(var max:VectorMaximos; act:InfoCodigo); 
+var 
+  pos,i:integer; 
+begin 
+  pos:=1; 
+  while (pos<=5) and (act.cant_pasajes < max[pos].cant) do begin 
+    pos:=pos+1; 
+  end; 
+  if (pos<=5) then begin 
+    for i:=5 downto pos do begin 
+      max[i]:=max[i-1]; 
+    end; 
+    max[pos].cant:=act.cant_pasajes; 
+    max[pos].cod_vuelo:=act.cod; 
+  end;
+end;
 
-ant:=l;
-act:=l;
-while(act<>nil)and(act^.dato.montoTotal<dato.montoTotal)do begin
+procedure InsertarOrdenado(var l:Lista2;dato:InfoCodigo); 
+var 
+  nue,ant,act:Lista2; 
+begin 
+  new(nue); 
+  nue^.dato:=dato;
+  ant:=l;
+  act:=l;
+  while (act<>nil) and (act^.dato.montoTotal<dato.montoTotal) do begin
     ant:=act;
     act:=act^.sig;
-end;
-if(ant=act)then
+  end;
+  if (ant=act) then
     l:=nue
-else
-  ant^.sig:=nue;
-nue^.sig:=act;
+  else
+    ant^.sig:=nue;
+    nue^.sig:=act;
 end;
 
-procedure LiberarLista(var l:lista); var aux:lista; begin while(l<>nil)do begin aux:=l; l:=l^.sig; dispose(aux) end; end; procedure LiberarLista2(var l:lista2); var aux:lista2; begin while(l<>nil)do begin aux:=l; l:=l^.sig; dispose(aux) end; end; var pri,aux:lista; valores:Precios; max:VectorMaximos; act:InfoCodigo; listaMontos:Lista2; mayores46:lista2; begin
+procedure LiberarLista(var l:lista); 
+var 
+  aux:lista; 
+begin 
+  while (l<>nil) do begin 
+    aux:=l; 
+    l:=l^.sig; 
+    dispose(aux) 
+  end; 
+end; 
 
-pri:=nil; listaMontos:=nil; mayores46:=nil; cargarLista(pri);//se dispone implementado cargarPrecios(valores);//se dispone implementado inicializarMaximos(max); aux:=pri; while (aux<>nil)do begin act.cod:=aux^.dato.cod_vuelo; act.cant_pasajes:=0; act.montoTotal:=0; while(aux<>nil)and(act.cod=aux^.dato.cod_vuelo)do begin act.cant_pasajes:=act.cant_pasajes + 1; act.montoTotal:=act.montoTotal + valores[aux^.dato.categoria,aux^.dato.cod_vuelo]; aux:=aux^.sig; end; InsertarOrdenado(listaMontos,act); actualizarMax(max,act); if(act.cant_pasajes>46)then begin InsertarOrdenado(mayores46,act); end; //resuelvo todo end; informarMaximos(max); LiberarLista(pri); LiberarLista2(mayores46); LiberarLista2(listaMontos); end; end.
+procedure LiberarLista2(var l:lista2); 
+var 
+  aux:lista2; 
+begin 
+  while (l<>nil) do begin 
+    aux:=l; 
+    l:=l^.sig; 
+    dispose(aux) 
+  end; 
+end; 
+
+var 
+  pri,aux:lista; 
+  valores:Precios; 
+  max:VectorMaximos; 
+  act:InfoCodigo; 
+  listaMontos:Lista2; 
+  mayores46:lista2; 
+  
+begin
+  pri:=nil; 
+  listaMontos:=nil; 
+  mayores46:=nil; 
+  cargarLista(pri); //se dispone implementado 
+  cargarPrecios(valores); //se dispone implementado 
+  inicializarMaximos(max); 
+  aux:=pri; 
+  
+  while (aux<>nil) do begin 
+    act.cod:=aux^.dato.cod_vuelo; 
+    act.cant_pasajes:=0; 
+    act.montoTotal:=0; 
+    
+    while (aux<>nil) and (act.cod=aux^.dato.cod_vuelo) do begin 
+      act.cant_pasajes:=act.cant_pasajes + 1; 
+      act.montoTotal:=act.montoTotal + valores[aux^.dato.categoria,aux^.dato.cod_vuelo]; 
+      aux:=aux^.sig; 
+    end; 
+    
+    InsertarOrdenado(listaMontos,act); 
+    actualizarMax(max,act); 
+    
+    if (act.cant_pasajes>46) then begin 
+      InsertarOrdenado(mayores46,act); 
+    end; 
+    end; 
+    
+    informarMaximos(max); 
+    LiberarLista(pri); 
+    LiberarLista2(mayores46); 
+    LiberarLista2(listaMontos); 
+  end; 
+end.
