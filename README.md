@@ -1,7 +1,7 @@
 # mauriciocrack
 
-##UNLP
-###Ingeniería en Computación
+## UNLP
+### Ingeniería en Computación
 
 Este es un repo colaborativo para ir cargando soluciones eficientes y adecuadas a ejercicios. 
 
