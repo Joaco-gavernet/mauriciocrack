@@ -48,7 +48,7 @@ var
 begin 
   for i:=1 to 5 do begin 
     writeln('el codigo',v[i].cod_vuelo,'tiene ',v[i].cant,'pasajes vendidos.'); 
-    v[i].cant:=0; 
+    v[i].cant:=0; // inecesario?
   end; 
 end;
 
