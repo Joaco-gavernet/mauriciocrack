@@ -144,11 +144,10 @@ begin
     if (act.cant_pasajes>46) then begin 
       InsertarOrdenado(mayores46,act); 
     end; 
-    end; 
-    
-    informarMaximos(max); 
-    LiberarLista(pri); 
-    LiberarLista2(mayores46); 
-    LiberarLista2(listaMontos); 
   end; 
+    
+  informarMaximos(max); 
+  LiberarLista(pri); 
+  LiberarLista2(mayores46); 
+  LiberarLista2(listaMontos);  
 end.
