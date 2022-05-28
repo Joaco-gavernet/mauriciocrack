@@ -1,0 +1,92 @@
+Consigna:
+  
+  Se dispone de cierta cantidad de mensajes de texto de una conocida red social. Cada mensaje
+cuenta con un texto, la cantidad de "me gusta" y la cantidad de veces que fué compartido con otros
+usuarios. Se dispone de un arreglo con capacidad máxima para 1000 mensajes ordenado por
+cantidad de "me gusta". Se pide:
+  
+  a. implemente un módulo que reciba el arreglo de mensajes anterior y un mensaje de texto y lo
+agreque de manera que mantenga el orden.
+  
+  b. implemente un módulo que reciba un arreglo de mensajes y lo reordene por la cantidad de veces
+que fue compartido.
+  
+  Nota: recuerde que el arreglo no necesariamente está completo y que no debe agregar mensajes si
+se alcanzó la capacidad máxima.
+
+-------------------------------------------------------------------------------------------------
+
+program
+const 
+  dimF=1000;
+  
+type
+  tipomensaje = record
+    texto: string;
+    likes: integer;
+    comp: integer;
+  end;
+  
+  tipovector: Array[1..dimF] of tipomensaje;
+  
+procedure insertarElementoOrdenado (var dimL: integer; var vector: tipovector; nue: tipovector; var exito: boolean);
+var
+  k, j: integer
+begin
+  k:= 1
+  exito:= false
+  
+  if (dimL < dimF) then
+    exito:= true
+    
+    while (k <= dimF) and (vector[k].likes < nue.likes) do
+      k:= k + 1
+    dimL:= dimL + 1
+    
+    for j:= dimL downto (k + 1) do
+      vector[j]:= vector[j - 1]
+      
+    vector[k]:= nue
+  end;
+end;
+
+procedure ordenarPorCompartido (var vector: tipovector; dimL: integer)
+var
+  ordenado: tipovector;
+  k, j, dimB, q: integer;
+begin
+  dimB:= 0
+  
+  for j:= 1 to dimL do begin
+    if not (ordenado[dimB] < vector[j]) then
+      k:= 1
+      
+      while (dimB > 0) and (ordenado[k].comp < vector[j].comp) do
+        k:= k + 1
+        
+      dimB:= dimB + 1
+      
+      for q:= dimB downto (k + 1) do
+        ordenado[q]:= ordenado [q - 1]
+    end else begin
+      dimB:= dimB + 1
+      k:= dimB
+    end;
+    
+    ordenado[k]:= vector[j];
+  end;
+  
+  for k:= 1 to dimB do
+    vector[k]:= ordenado[k]
+end;
+
+      
+      
+      
+
+
+
+
+
+
+
